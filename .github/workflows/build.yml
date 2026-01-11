@@ -1,0 +1,15 @@
+name: Build Project
+on:
+    pull_request:
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get Latest Code
+              uses: actions/checkout@v6
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v2
+            - name: Install Dependencies
+              run: bun i --frozen-lockfile
+            - name: Build Project
+              run: bun run build

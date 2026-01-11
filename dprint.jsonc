@@ -1,0 +1,52 @@
+// Adopt from https://github.com/microsoft/TypeScript with minor changes
+{
+	"indentWidth": 4,
+	"lineWidth": 1000,
+	"newLineKind": "crlf",
+	"useTabs": true,
+	"typescript": {
+		"semiColons": "prefer",
+		"quoteStyle": "preferDouble",
+		"quoteProps": "consistent",
+		"useBraces": "whenNotSingleLine",
+		"bracePosition": "sameLineUnlessHanging",
+		"singleBodyPosition": "sameLine",
+		"nextControlFlowPosition": "nextLine",
+		"trailingCommas": "onlyMultiLine",
+		"operatorPosition": "nextLine",
+		"preferHanging": false,
+
+		"arrowFunction.useParentheses": "preferNone",
+		"jsx.bracketPosition": "sameLine",
+		"jsx.forceNewLinesSurroundingContent": false,
+		"jsx.multiLineParens": "never",
+		"functionExpression.spaceAfterFunctionKeyword": true,
+		"constructorType.spaceAfterNewKeyword": true,
+		"constructSignature.spaceAfterNewKeyword": true,
+
+		// Let ESLint handle this.
+		"module.sortImportDeclarations": "maintain",
+		"module.sortExportDeclarations": "maintain",
+		"exportDeclaration.sortNamedExports": "maintain",
+		"importDeclaration.sortNamedImports": "maintain"
+	},
+	"json": {
+		"trailingCommas": "never"
+	},
+	"markdown": {},
+	"prettier": {
+		"associations": [
+			"**/*.{html,htm,xhtml,css,scss,sass,less,graphql,graphqls,gql,yaml,yml}"
+		]
+	},
+	"excludes": [
+		"node_modules",
+		"out"
+	],
+	"plugins": [
+		"https://plugins.dprint.dev/typescript-0.95.13.wasm",
+		"https://plugins.dprint.dev/json-0.21.1.wasm",
+		"https://plugins.dprint.dev/markdown-0.20.0.wasm",
+		"https://plugins.dprint.dev/prettier-0.62.0.json@80fefd1450bfd3f469590cc6a3f40f6ace26974f948b9602124f486036fbdfab"
+	]
+}

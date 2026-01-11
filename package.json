@@ -1,0 +1,39 @@
+{
+	"name": "granular-caption-aligner",
+	"version": "0.0.0",
+	"description": "A tool for creating granular subtitle timing alignments",
+	"type": "module",
+	"scripts": {
+		"start": "bun index.html",
+		"build": "bun ./build.ts",
+		"lint": "eslint src && tsc",
+		"lint:fix": "eslint src --fix",
+		"format": "dprint check",
+		"format:fix": "dprint fmt"
+	},
+	"dependencies": {
+		"@primer/octicons-react": "^19.21.1",
+		"react": "^19.2.3",
+		"react-dom": "^19.2.3",
+		"tailwind-merge": "^3.4.0",
+		"tailwindcss": "^4.1.18"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.3.5",
+		"@types/react": "^19.2.8",
+		"@types/react-dom": "^19.2.3",
+		"@typescript-eslint/eslint-plugin": "7.18.0",
+		"@typescript-eslint/parser": "^7.18.0",
+		"bun-plugin-tailwind": "^0.1.2",
+		"eslint": "^8.57.1",
+		"eslint-plugin-import": "^2.32.0",
+		"eslint-plugin-jsx-a11y": "^6.10.2",
+		"eslint-plugin-no-array-concat": "^0.1.2",
+		"eslint-plugin-react": "^7.37.5",
+		"eslint-plugin-react-hooks": "^4.6.2",
+		"eslint-plugin-react-refresh": "^0.4.26",
+		"typescript": "~5.9.3"
+	},
+	"license": "BSD-3-Clause",
+	"browserslist": "> 0.5% in HK and fully supports wasm and not dead"
+}
