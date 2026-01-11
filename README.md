@@ -73,11 +73,11 @@ Fuses trailing punctuation into the previous significant token.
 ## Escaping Special Characters
 
 In input lyrics files, use backtick (`` ` ``) to escape special characters:
-- Newline: `` `n ``
-- Carriage return: `` `r ``
-- Tab: `` `t ``
+<!-- - Newline: `` `n `` -->
+<!-- - Carriage return: `` `r `` -->
+<!-- - Tab: `` `t `` -->
 - Pipe: `` `| ``
-- Backslash: `` `\\ ``
-- Braces: `` `{ ``, `` `} ``
-- Brackets: `` `[ ``, `` `] ``
+<!-- - Backslash: `` `\ `` -->
+<!-- - Braces: `` `{ ``, `` `} `` -->
+<!-- - Brackets: `` `[ ``, `` `] `` -->
 - Backtick: ``` `` ```
