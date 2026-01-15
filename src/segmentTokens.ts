@@ -233,6 +233,7 @@ function applyPunctuationMode(
 				}
 			}
 
+			// @ts-expect-error - Suppress unreachable code warning (ESLint complains if there is no break statement)
 			break;
 		}
 
@@ -274,10 +275,12 @@ function applyPunctuationMode(
 				}
 			}
 
+			// @ts-expect-error - Suppress unreachable code warning (ESLint complains if there is no break statement)
 			break;
 		}
 	}
 
+	// @ts-expect-error - Suppress unreachable code warning (return something just in case)
 	return [{ text, isSignificant: true }];
 }
 

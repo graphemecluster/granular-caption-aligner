@@ -46,10 +46,10 @@ export default function ConfigView({ onStart }: ConfigViewProps) {
 
 				<div className="space-y-6">
 					{/* Granularity */}
-					<div>
-						<label className="block text-sm font-semibold text-gray-700 mb-2">
+					<fieldset>
+						<legend className="block text-sm font-semibold text-gray-700 mb-2">
 							Granularity
-						</label>
+						</legend>
 						<div className="space-y-2">
 							<label className="flex items-center">
 								<input
@@ -88,13 +88,13 @@ export default function ConfigView({ onStart }: ConfigViewProps) {
 								<span>Separated by Pipe (|)</span>
 							</label>
 						</div>
-					</div>
+					</fieldset>
 
 					{/* Punctuation */}
-					<div>
-						<label className="block text-sm font-semibold text-gray-700 mb-2">
+					<fieldset>
+						<legend className="block text-sm font-semibold text-gray-700 mb-2">
 							Punctuation Handling
-						</label>
+						</legend>
 						<div className="space-y-2">
 							<label className="flex items-center">
 								<input
@@ -115,13 +115,13 @@ export default function ConfigView({ onStart }: ConfigViewProps) {
 								<span>Part of Previous Unit</span>
 							</label>
 						</div>
-					</div>
+					</fieldset>
 
 					{/* Recording Method */}
-					<div>
-						<label className="block text-sm font-semibold text-gray-700 mb-2">
+					<fieldset>
+						<legend className="block text-sm font-semibold text-gray-700 mb-2">
 							Recording Method
-						</label>
+						</legend>
 						<div className="space-y-2">
 							<label className="flex items-center">
 								<input
@@ -152,30 +152,30 @@ export default function ConfigView({ onStart }: ConfigViewProps) {
 								<span className="text-gray-400">MIDI Keyboard (future)</span>
 							</label>
 						</div>
-					</div>
+					</fieldset>
 
 					{/* File Uploads */}
-					<div>
-						<label className="block text-sm font-semibold text-gray-700 mb-2">
+					<fieldset>
+						<legend className="block text-sm font-semibold text-gray-700 mb-2">
 							Audio File
-						</label>
+						</legend>
 						<input
 							type="file"
 							accept="audio/*"
 							onChange={e => setAudioFile(e.target.files?.[0] || null)}
 							className="w-full border border-gray-300 rounded px-3 py-2" />
-					</div>
+					</fieldset>
 
-					<div>
-						<label className="block text-sm font-semibold text-gray-700 mb-2">
+					<fieldset>
+						<legend className="block text-sm font-semibold text-gray-700 mb-2">
 							Lyrics File
-						</label>
+						</legend>
 						<input
 							type="file"
 							accept="*"
 							onChange={e => setLyricsFile(e.target.files?.[0] || null)}
 							className="w-full border border-gray-300 rounded px-3 py-2" />
-					</div>
+					</fieldset>
 
 					{/* Start Button */}
 					<button

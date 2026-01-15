@@ -1,6 +1,6 @@
 import LineRenderer from "./LineRenderer";
 
-import type { GranularLine } from "./types";
+import type { GranularLine, GranularToken } from "./types";
 
 export function RecordingDisplay({
 	lines,
@@ -12,14 +12,15 @@ export function RecordingDisplay({
 	autoAdvanced: boolean;
 }) {
 	const previousLines = lines.slice(0, currentLineIndex);
-	const currentLine = lines[currentLineIndex];
+	// Adding undefined to stop ESLint from complaining about unnecessary optional chain
+	const currentLine = lines[currentLineIndex] as GranularLine | undefined;
 	const nextLines = lines.slice(currentLineIndex + 1);
 
 	// Compute pendingEnd and pendingStart tokens (following RECORD_START/RECORD_END logic)
-	let pendingEndToken = null;
-	let pendingStartToken = null;
+	let pendingEndToken: GranularToken | null = null;
+	let pendingStartToken: GranularToken | null = null;
 
-	if (currentLine && currentLine.isSignificant) {
+	if (currentLine?.isSignificant) {
 		if (autoAdvanced) {
 			// This line will be cleared for re-recording from the start (first significant token) without pendingEnd token
 			pendingStartToken = currentLine.tokens.find(t => t.isSignificant) ?? null;

@@ -172,7 +172,7 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 	function handlePlayPause() {
 		if (audioRef.current) {
 			if (audioRef.current.paused) {
-				audioRef.current.play();
+				void audioRef.current.play();
 			}
 			else {
 				audioRef.current.pause();
@@ -187,7 +187,8 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 	}
 
 	function handleLineNavigationChange(value: number) {
-		const lineIndex = significantLineIndices[value - 1];
+		// Adding undefined to stop ESLint from complaining about unnecessary conditional
+		const lineIndex = significantLineIndices[value - 1] as number | undefined;
 		if (lineIndex !== undefined) {
 			navigateToLine(lineIndex);
 		}
@@ -278,6 +279,7 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 				</div>
 			</div>
 
+			{/* eslint-disable-next-line jsx-a11y/media-has-caption */}
 			<audio ref={audioRef} src={audioUrl} />
 
 			<div className="flex-none bg-gray-800 p-4 text-white text-sm">
