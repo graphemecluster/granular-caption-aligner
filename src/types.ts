@@ -1,6 +1,11 @@
-export type Granularity = "wholeLine" | "character" | "word" | "pipe";
-export type PunctuationMode = "ignore" | "partOfPrevious";
+export type PunctuationMode = "ignore" | "merge";
 export type RecordingMethod = "spacebarStartEnterEnd" | "spacebarStartRelease" | "midi";
+
+export interface SegmentationOptions {
+	character: boolean;
+	word: boolean;
+	punctuation: PunctuationMode;
+}
 
 export interface GranularToken {
 	text: string;
@@ -19,8 +24,7 @@ export interface ParsedLyrics {
 }
 
 export interface AlignerConfig {
-	granularity: Granularity;
-	punctuation: PunctuationMode;
+	segmentation: SegmentationOptions;
 	recordingMethod: RecordingMethod;
 	audioFile: File | null;
 	lyricsFile: File | null;

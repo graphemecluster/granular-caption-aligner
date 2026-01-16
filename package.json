@@ -13,6 +13,7 @@
 	},
 	"dependencies": {
 		"@primer/octicons-react": "^19.21.1",
+		"linebreak": "^1.1.0",
 		"react": "^19.2.3",
 		"react-dom": "^19.2.3",
 		"tailwind-merge": "^3.4.0",

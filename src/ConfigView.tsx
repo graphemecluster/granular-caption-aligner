@@ -2,42 +2,41 @@ import { useState } from "react";
 
 import { MarkGithubIcon } from "@primer/octicons-react";
 
-import type { AlignerConfig, Granularity, PunctuationMode, RecordingMethod } from "./types";
+import type { AlignerConfig, PunctuationMode, RecordingMethod } from "./types";
 
 interface ConfigViewProps {
 	onStart: (config: AlignerConfig) => void;
 }
 
 export default function ConfigView({ onStart }: ConfigViewProps) {
-	const [granularity, setGranularity] = useState<Granularity>("word");
-	const [punctuation, setPunctuation] = useState<PunctuationMode>("ignore");
-	const [recordingMethod, setRecordingMethod] = useState<RecordingMethod>("spacebarStartEnterEnd");
-	const [audioFile, setAudioFile] = useState<File | null>(null);
-	const [lyricsFile, setLyricsFile] = useState<File | null>(null);
+	const [config, setConfig] = useState<AlignerConfig>({
+		segmentation: {
+			character: false,
+			word: false,
+			punctuation: "ignore",
+		},
+		recordingMethod: "spacebarStartEnterEnd",
+		audioFile: null,
+		lyricsFile: null,
+	});
 
 	function handleStart() {
-		if (!audioFile || !lyricsFile) {
-			alert("Please upload both audio and lyrics files");
+		if (!config.audioFile || !config.lyricsFile) {
+			alert("Please upload both audio and transcript files");
 			return;
 		}
 
-		onStart({
-			granularity,
-			punctuation,
-			recordingMethod,
-			audioFile,
-			lyricsFile,
-		});
+		onStart(config);
 	}
 
 	return (
 		<div className="bg-gray-50 grid place-items-center p-8">
-			<div className="bg-white rounded-lg shadow-lg p-8 max-w-2xl w-full relative">
+			<div className="bg-white rounded-lg shadow-lg p-8 max-w-3xl w-full relative">
 				<a
 					href="https://github.com/graphemecluster/granular-caption-aligner"
 					target="_blank"
 					rel="noopener noreferrer"
-					className="absolute top-8 right-6 text-gray-500 hover:text-gray-800 transition-colors"
+					className="absolute top-8 right-8 text-gray-500 hover:text-gray-800 transition-colors"
 					aria-label="GitHub">
 					<MarkGithubIcon size={32} />
 				</a>
@@ -45,108 +44,114 @@ export default function ConfigView({ onStart }: ConfigViewProps) {
 				<h1 className="text-3xl font-bold -mt-1 mb-6 text-gray-800">Granular Caption Aligner (Beta)</h1>
 
 				<div className="space-y-6">
-					{/* Granularity */}
+					{/* Segmentation */}
 					<fieldset>
-						<legend className="block text-sm font-semibold text-gray-700 mb-2">
-							Granularity
+						<legend className="block font-semibold text-gray-700 mb-2">
+							Segmentation
 						</legend>
+						<p className="text-sm text-gray-600 mb-2">
+							In your transcript, use pipes (|) to manually mark segment boundaries.
+						</p>
+						<p className="text-sm text-gray-600 mb-3">
+							You may choose to further segment automatically by:
+						</p>
 						<div className="space-y-2">
-							<label className="flex items-center">
+							<label className="flex items-baseline">
 								<input
-									type="radio"
-									value="wholeLine"
-									checked={granularity === "wholeLine"}
-									onChange={e => setGranularity(e.target.value as Granularity)}
+									type="checkbox"
+									checked={config.segmentation.character}
+									onChange={e => setConfig({ ...config, segmentation: { ...config.segmentation, character: e.target.checked } })}
 									className="mr-2" />
-								<span>Whole Line</span>
+								<span>
+									<strong>Character:</strong> Add boundaries at Unicode line-breaking opportunities. Best for texts in CJK or languages that don’t use spaces to separate words.
+								</span>
 							</label>
-							<label className="flex items-center">
+							<label className="flex items-baseline">
 								<input
-									type="radio"
-									value="character"
-									checked={granularity === "character"}
-									onChange={e => setGranularity(e.target.value as Granularity)}
+									type="checkbox"
+									checked={config.segmentation.word}
+									onChange={e => setConfig({ ...config, segmentation: { ...config.segmentation, word: e.target.checked } })}
 									className="mr-2" />
-								<span>Character (Line Breaking Opportunity)</span>
-							</label>
-							<label className="flex items-center">
-								<input
-									type="radio"
-									value="word"
-									checked={granularity === "word"}
-									onChange={e => setGranularity(e.target.value as Granularity)}
-									className="mr-2" />
-								<span>Word</span>
-							</label>
-							<label className="flex items-center">
-								<input
-									type="radio"
-									value="pipe"
-									checked={granularity === "pipe"}
-									onChange={e => setGranularity(e.target.value as Granularity)}
-									className="mr-2" />
-								<span>Separated by Pipe (|)</span>
+								<span>
+									<strong>Word:</strong> Add boundaries at Unicode word breaks. Tip: Cut syllables manually by pipes, then check this box to further split by spaces.
+								</span>
 							</label>
 						</div>
+						<p className="text-sm text-gray-600 mt-3">
+							<strong>Note:</strong> If none of the above is checked and no pipes are inserted, each line becomes a single segment.
+						</p>
+						<p className="text-sm text-gray-600 mt-2">
+							Use backslashes (\) to suppress automatic boundaries and join adjacent segments.
+						</p>
+						<p className="text-sm text-gray-600 mt-2">
+							To include literal pipes or backslashes, escape them by backticks (that is, replace them by `| or `\).
+						</p>
 					</fieldset>
 
 					{/* Punctuation */}
 					<fieldset>
-						<legend className="block text-sm font-semibold text-gray-700 mb-2">
-							Punctuation Handling
+						<legend className="block font-semibold text-gray-700 mb-2">
+							Punctuation
 						</legend>
+						<p className="text-sm text-gray-600 mb-3">
+							Determine how punctuation is handled during segmentation.
+						</p>
 						<div className="space-y-2">
-							<label className="flex items-center">
+							<label className="flex items-baseline">
 								<input
 									type="radio"
 									value="ignore"
-									checked={punctuation === "ignore"}
-									onChange={e => setPunctuation(e.target.value as PunctuationMode)}
+									checked={config.segmentation.punctuation === "ignore"}
+									onChange={e => setConfig({ ...config, segmentation: { ...config.segmentation, punctuation: e.target.value as PunctuationMode } })}
 									className="mr-2" />
-								<span>Ignore (separate insignificant token)</span>
+								<span>
+									<strong>Ignore:</strong> Punctuation marks are separated into their own insignificant tokens.
+								</span>
 							</label>
-							<label className="flex items-center">
+							<label className="flex items-baseline">
 								<input
 									type="radio"
-									value="partOfPrevious"
-									checked={punctuation === "partOfPrevious"}
-									onChange={e => setPunctuation(e.target.value as PunctuationMode)}
+									value="merge"
+									checked={config.segmentation.punctuation === "merge"}
+									onChange={e => setConfig({ ...config, segmentation: { ...config.segmentation, punctuation: e.target.value as PunctuationMode } })}
 									className="mr-2" />
-								<span>Part of Previous Unit</span>
+								<span>
+									<strong>Merge:</strong> Punctuation marks that “stick” to adjacent words are merged into single tokens.
+								</span>
 							</label>
 						</div>
 					</fieldset>
 
 					{/* Recording Method */}
 					<fieldset>
-						<legend className="block text-sm font-semibold text-gray-700 mb-2">
+						<legend className="block font-semibold text-gray-700 mb-2">
 							Recording Method
 						</legend>
 						<div className="space-y-2">
-							<label className="flex items-center">
+							<label className="flex items-baseline">
 								<input
 									type="radio"
 									value="spacebarStartEnterEnd"
-									checked={recordingMethod === "spacebarStartEnterEnd"}
-									onChange={e => setRecordingMethod(e.target.value as RecordingMethod)}
+									checked={config.recordingMethod === "spacebarStartEnterEnd"}
+									onChange={e => setConfig({ ...config, recordingMethod: e.target.value as RecordingMethod })}
 									className="mr-2" />
 								<span>Spacebar for start, Enter for end (optional)</span>
 							</label>
-							<label className="flex items-center">
+							<label className="flex items-baseline">
 								<input
 									type="radio"
 									value="spacebarStartRelease"
-									checked={recordingMethod === "spacebarStartRelease"}
-									onChange={e => setRecordingMethod(e.target.value as RecordingMethod)}
+									checked={config.recordingMethod === "spacebarStartRelease"}
+									onChange={e => setConfig({ ...config, recordingMethod: e.target.value as RecordingMethod })}
 									className="mr-2" />
 								<span>Spacebar press for start, release for end</span>
 							</label>
-							<label className="flex items-center">
+							<label className="flex items-baseline">
 								<input
 									type="radio"
 									value="midi"
-									checked={recordingMethod === "midi"}
-									onChange={e => setRecordingMethod(e.target.value as RecordingMethod)}
+									checked={config.recordingMethod === "midi"}
+									onChange={e => setConfig({ ...config, recordingMethod: e.target.value as RecordingMethod })}
 									className="mr-2"
 									disabled />
 								<span className="text-gray-400">MIDI Keyboard (future)</span>
@@ -156,24 +161,24 @@ export default function ConfigView({ onStart }: ConfigViewProps) {
 
 					{/* File Uploads */}
 					<fieldset>
-						<legend className="block text-sm font-semibold text-gray-700 mb-2">
+						<legend className="block font-semibold text-gray-700 mb-2">
 							Audio File
 						</legend>
 						<input
 							type="file"
 							accept="audio/*"
-							onChange={e => setAudioFile(e.target.files?.[0] || null)}
+							onChange={e => setConfig({ ...config, audioFile: e.target.files?.[0] || null })}
 							className="w-full border border-gray-300 rounded px-3 py-2" />
 					</fieldset>
 
 					<fieldset>
-						<legend className="block text-sm font-semibold text-gray-700 mb-2">
-							Lyrics File
+						<legend className="block font-semibold text-gray-700 mb-2">
+							Transcript File
 						</legend>
 						<input
 							type="file"
 							accept="*"
-							onChange={e => setLyricsFile(e.target.files?.[0] || null)}
+							onChange={e => setConfig({ ...config, lyricsFile: e.target.files?.[0] || null })}
 							className="w-full border border-gray-300 rounded px-3 py-2" />
 					</fieldset>
 

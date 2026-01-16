@@ -6,9 +6,15 @@ function formatTime(seconds: number): string {
 	return `${String(mins).padStart(2, "0")}:${String(secs.toFixed(3)).padStart(6, "0")}`;
 }
 
+const specialCharsMapping: Record<string, string | undefined> = {
+	"\n": "n",
+	"\r": "r",
+	"\t": "t",
+};
+
 function escapeSpecialChars(text: string): string {
-	const specialChars = /[\n\r\t|\\{}[\]`]/g;
-	return text.replace(specialChars, match => `\`${match}`);
+	const specialChars = /[\n\r\t|\\{}[\]<>`]/g;
+	return text.replace(specialChars, match => `\`${specialCharsMapping[match] || match}`);
 }
 
 export default function exportGST(lines: GranularLine[]): string {

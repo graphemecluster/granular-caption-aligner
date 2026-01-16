@@ -15,7 +15,7 @@ export default function GranularCaptionAligner() {
 		if (!newConfig.lyricsFile) return;
 
 		const lyricsText = await newConfig.lyricsFile.text();
-		const segmentedLines = parseGranularLyrics(lyricsText, newConfig.granularity, newConfig.punctuation);
+		const segmentedLines = parseGranularLyrics(lyricsText, newConfig.segmentation);
 
 		setConfig(newConfig);
 		setParsedLines(segmentedLines);
