@@ -11,5 +11,11 @@ jobs:
               uses: oven-sh/setup-bun@v2
             - name: Install Dependencies
               run: bun i --frozen-lockfile
+            - name: Format Project
+              run: bun run format
+            - name: Lint Project
+              run: bun run lint
+            - name: Test Project
+              run: bun test
             - name: Build Project
               run: bun run build
