@@ -26,6 +26,7 @@
 		"@typescript-eslint/eslint-plugin": "7.18.0",
 		"@typescript-eslint/parser": "^7.18.0",
 		"bun-plugin-tailwind": "^0.1.2",
+		"dprint": "^0.51.1",
 		"eslint": "^8.57.1",
 		"eslint-plugin-import": "^2.32.0",
 		"eslint-plugin-jsx-a11y": "^6.10.2",
