@@ -132,7 +132,8 @@ export default function ConfigView({ onStart }: ConfigViewProps) {
 
 					{/* File Uploads */}
 					<AudioFileSelector
-						audioFile={config.audioFile}
+						// Don't show file name repeatedly
+						audioFile={null} // config.audioFile
 						onAudioFileChange={file => setConfig({ ...config, audioFile: file })} />
 
 					<fieldset>
