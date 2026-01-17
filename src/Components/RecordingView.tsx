@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { MarkGithubIcon } from "@primer/octicons-react";
+import { GearIcon, MarkGithubIcon, PauseIcon, PlayIcon, QuestionIcon, SquareCircleIcon } from "@primer/octicons-react";
 
+import HelpDialog from "./HelpDialog";
 import { RecordingDisplay } from "./RecordingDisplay";
 import SettingsDialog from "./SettingsDialog";
 import exportGST from "../format/exportGST";
@@ -37,6 +38,7 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 		recordingMethod: config.recordingMethod,
 	});
 	const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+	const [isHelpOpen, setIsHelpOpen] = useState(false);
 
 	const getCurrentTime = useCallback(() => audioRef.current?.currentTime ?? 0, []);
 
@@ -113,19 +115,40 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 	}, [audioUrl, audioControls.playbackRate, audioControls.volume]);
 
 	useEffect(() => {
+		function handleWheel(e: WheelEvent) {
+			// Don't handle wheel events when dialog is open
+			if (isSettingsOpen || isHelpOpen) return;
+
+			e.preventDefault();
+			if (e.deltaY < 0) {
+				// Scroll up - previous line
+				if (currentSignificantIndex > 0) {
+					navigateToLine(significantLineIndices[currentSignificantIndex - 1]);
+				}
+			}
+			else if (e.deltaY > 0) {
+				// Scroll down - next line
+				if (currentSignificantIndex < totalSignificantLines - 1) {
+					navigateToLine(significantLineIndices[currentSignificantIndex + 1]);
+				}
+			}
+		}
+
 		function handleKeyDown(e: KeyboardEvent) {
 			// Don't handle keyboard events when dialog is open
-			if (isSettingsOpen) return;
+			if (isSettingsOpen || isHelpOpen) return;
 
-			if (e.code === "Space" && !e.repeat) {
+			if ((e.code === "Space" || e.code === "KeyZ") && !e.repeat) {
 				e.preventDefault();
+				// Mark start time of the current token
 				recordStartTime();
 			}
-			else if (e.code === "Enter" && !e.repeat && configOverrides.recordingMethod === "spacebarStartEnterEnd") {
+			else if ((e.code === "Enter" || e.code === "KeyC") && !e.repeat && configOverrides.recordingMethod === "spacebarStartEnterEnd") {
 				e.preventDefault();
+				// Mark end time of the current token
 				recordEndTime();
 			}
-			// Allow key repeat for all of the following keys
+			// Allow key repeat for all of the following keys except Home, End and Numpad0
 			// WASD Navigation
 			else if (e.code === "KeyW") {
 				e.preventDefault();
@@ -150,6 +173,27 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 				e.preventDefault();
 				// Ignore current line
 				dispatch({ type: "IGNORE" });
+			}
+			// Real Navigation Keys
+			else if (e.code === "Home" && !e.repeat) {
+				e.preventDefault();
+				// Navigate to the first significant line
+				navigateToLine(significantLineIndices[0]);
+			}
+			else if (e.code === "End" && !e.repeat) {
+				e.preventDefault();
+				// Navigate to the last significant line
+				navigateToLine(significantLineIndices[totalSignificantLines - 1]);
+			}
+			else if (e.code === "PageUp") {
+				e.preventDefault();
+				// Navigate to the significant line five lines above
+				navigateToLine(significantLineIndices[Math.max(0, currentSignificantIndex - 5)]);
+			}
+			else if (e.code === "PageDown") {
+				e.preventDefault();
+				// Navigate to the significant line five lines below
+				navigateToLine(significantLineIndices[Math.min(totalSignificantLines - 1, currentSignificantIndex + 5)]);
 			}
 			// Arrow Keys for Audio Control
 			else if (e.code === "ArrowUp") {
@@ -182,26 +226,33 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 					audioRef.current.currentTime = Math.min(audioState.duration, audioRef.current.currentTime + settings.seekSeconds);
 				}
 			}
+			else if (e.code === "Numpad0" && !e.repeat) {
+				e.preventDefault();
+				// Play/pause audio
+				handlePlayPause();
+			}
 		}
 
 		function handleKeyUp(e: KeyboardEvent) {
 			// Don't handle keyboard events when dialog is open
-			if (isSettingsOpen) return;
+			if (isSettingsOpen || isHelpOpen) return;
 
-			if (e.code === "Space" && configOverrides.recordingMethod === "spacebarStartRelease") {
+			if ((e.code === "Space" || e.code === "KeyZ") && configOverrides.recordingMethod === "spacebarStartRelease") {
 				e.preventDefault();
 				recordEndTime();
 			}
 		}
 
+		window.addEventListener("wheel", handleWheel, { passive: false });
 		window.addEventListener("keydown", handleKeyDown);
 		window.addEventListener("keyup", handleKeyUp);
 
 		return () => {
+			window.removeEventListener("wheel", handleWheel);
 			window.removeEventListener("keydown", handleKeyDown);
 			window.removeEventListener("keyup", handleKeyUp);
 		};
-	}, [configOverrides.recordingMethod, recordStartTime, recordEndTime, currentSignificantIndex, totalSignificantLines, significantLineIndices, navigateToLine, dispatch, settings, audioState.duration, isSettingsOpen]);
+	}, [configOverrides.recordingMethod, recordStartTime, recordEndTime, currentSignificantIndex, totalSignificantLines, significantLineIndices, navigateToLine, dispatch, settings, audioState.duration, isSettingsOpen, isHelpOpen]);
 
 	const handleSaveFile = useCallback(() => {
 		const gstContent = exportGST(lines);
@@ -275,22 +326,16 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 			<div className="flex-none bg-gray-800 p-4 flex items-center justify-between gap-4">
 				<button
 					onClick={onBack}
-					className="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded transition-colors cursor-pointer">
-					← Back
+					className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded transition-colors cursor-pointer">
+					←&nbsp;Back
 				</button>
 
 				{/* Audio Controls */}
 				<div className="flex-1 flex items-center gap-4">
 					<button
 						onClick={handlePlayPause}
-						className="bg-sky-600 hover:bg-sky-700 text-white px-5 py-2 rounded transition-colors cursor-pointer">
-						{audioState.isPlaying ? "Pause" : "Play"}
-					</button>
-
-					<button
-						onClick={handleStop}
-						className="bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-5 py-2 rounded transition-colors cursor-pointer">
-						Stop
+						className="bg-sky-600 hover:bg-sky-700 text-white px-2.5 py-2 rounded transition-colors cursor-pointer">
+						{audioState.isPlaying ? <PauseIcon size={20} aria-label="Pause" /> : <PlayIcon size={20} aria-label="Play" />}
 					</button>
 
 					<span className="text-white text-sm">{formatTime(audioState.currentTime)}</span>
@@ -306,41 +351,50 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 
 					<span className="text-white text-sm">{formatTime(audioState.duration)}</span>
 
-					<div className="flex items-center gap-2">
-						<label className="contents">
-							<span className="text-white text-xs">Speed:</span>
-							<input
-								type="range"
-								min="-2"
-								max="2"
-								step="any"
-								value={Math.log2(audioControls.playbackRate)}
-								onChange={e => setAudioControls(prev => ({ ...prev, playbackRate: 2 ** Number(e.target.value) }))}
-								className="w-24" />
-						</label>
-						<span className="text-white text-xs w-8">{formatPlaybackRate(audioControls.playbackRate)}</span>
-					</div>
+					<button
+						onClick={handleStop}
+						className="bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-2.5 py-2 rounded transition-colors cursor-pointer">
+						<SquareCircleIcon size={20} aria-label="Stop" />
+					</button>
 
-					<div className="flex items-center gap-2">
-						<label className="contents">
-							<span className="text-white text-xs">Vol:</span>
-							<input
-								type="range"
-								min="0"
-								max="1"
-								step="any"
-								value={audioControls.volume}
-								onChange={e => setAudioControls(prev => ({ ...prev, volume: Number(e.target.value) }))}
-								className="w-24" />
-						</label>
-						<span className="text-white text-xs w-8">{formatVolume(audioControls.volume)}</span>
+					<div className="flex flex-col gap-2">
+						<div className="flex items-center gap-2">
+							<label className="contents">
+								<span className="text-white text-xs text-right flex-1">Speed</span>
+								<input
+									type="range"
+									min="-2"
+									max="2"
+									step="any"
+									value={Math.log2(audioControls.playbackRate)}
+									onChange={e => setAudioControls(prev => ({ ...prev, playbackRate: 2 ** Number(e.target.value) }))}
+									className="w-28" />
+							</label>
+							<span className="text-white text-xs w-8">{formatPlaybackRate(audioControls.playbackRate)}</span>
+						</div>
+
+						<div className="flex items-center gap-2">
+							<label className="contents">
+								<span className="text-white text-xs text-right flex-1">Volume</span>
+								<input
+									type="range"
+									min="0"
+									max="1"
+									step="any"
+									value={audioControls.volume}
+									onChange={e => setAudioControls(prev => ({ ...prev, volume: Number(e.target.value) }))}
+									className="w-28" />
+							</label>
+							<span className="text-white text-xs w-8">{formatVolume(audioControls.volume)}</span>
+						</div>
 					</div>
 				</div>
 
 				<div className="flex gap-4">
 					<button
 						onClick={() => setIsSettingsOpen(true)}
-						className="bg-yellow-600 hover:bg-yellow-700 text-white px-5 py-2 rounded transition-colors cursor-pointer">
+						className="flex items-center gap-2 bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded transition-colors cursor-pointer">
+						<GearIcon size={18} />
 						Settings
 					</button>
 
@@ -352,8 +406,9 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 
 					<button
 						onClick={handleSaveFile}
-						className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded transition-colors cursor-pointer">
-						Save (Ctrl+S)
+						className="flex flex-col justify-center gap-0.5 bg-teal-600 hover:bg-teal-700 text-white leading-none px-5 rounded transition-colors cursor-pointer">
+						<div>Save</div>
+						<div className="text-gray-200 text-[0.625rem]">Ctrl+S</div>
 					</button>
 				</div>
 			</div>
@@ -398,7 +453,11 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 				settings={settings}
 				onSettingsChange={setSettings} />
 
-			<div className="flex-none bg-gray-800 p-4 text-white text-sm">
+			<HelpDialog
+				isOpen={isHelpOpen}
+				onClose={() => setIsHelpOpen(false)} />
+
+			<div className="flex-none bg-gray-800 p-4 text-white text-sm whitespace-nowrap">
 				<div className="flex gap-6">
 					<div className="flex items-center gap-2">
 						<span className="inline-block w-4 h-4 bg-gray-500 rounded"></span>
@@ -428,7 +487,16 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 						<span className="inline-block w-4 h-4 bg-red-600 rounded"></span>
 						<span>Manually Ignored</span>
 					</div>
+
 					<div className="flex-1"></div>
+
+					<button
+						onClick={() => setIsHelpOpen(true)}
+						className="flex items-center gap-2 bg-cyan-700 hover:bg-cyan-800 text-white -m-2 px-3.5 py-2 rounded transition-colors cursor-pointer">
+						<QuestionIcon size={18} />
+						Help
+					</button>
+
 					<a
 						href="https://github.com/graphemecluster/granular-caption-aligner"
 						target="_blank"

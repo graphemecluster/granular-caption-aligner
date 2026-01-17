@@ -9,8 +9,8 @@ Visit [this page](https://graphemecluster.github.io/granular-caption-aligner) to
 - **Automatic and Manual Segmentation**: Split segments at character and/or word levels, or add pipes (`|`) to split explicitly
 - **Flexible Punctuation Handling**: Choose how punctuation is treated during segmentation
 - **Multiple Recording Methods**:
-  - Spacebar for start, Enter for end (optional)
-  - Spacebar press for start, release for end
+  - <kbd>Space</kbd>/<kbd>Z</kbd> for start, <kbd>Enter</kbd>/<kbd>C</kbd> for end (optional)
+  - <kbd>Space</kbd>/<kbd>Z</kbd> press for start, release for end
   - MIDI keyboard support (future extension)
 - **Real-time Visual Feedback**: Color-coded token states during recording
 - **Export to GST Format**: Save aligned captions in the custom `.gst` format
@@ -61,15 +61,15 @@ Punctuation "sticks" to adjacent words. Open punctuation like `(`, `{`, `[`, `�
 
 ## Recording Methods
 
-### Spacebar Start, Enter End
+### <kbd>Space</kbd>/<kbd>Z</kbd> for Start, <kbd>Enter</kbd>/<kbd>C</kbd> for End
 
-- Press **Spacebar** to mark the start of a token
-- Press **Enter** to mark the end (optional - next spacebar press will end the previous token)
+- Press <kbd>Space</kbd>/<kbd>Z</kbd> to mark the start of a token
+- Press <kbd>Enter</kbd>/<kbd>C</kbd> to mark the end (optional - next <kbd>Space</kbd>/<kbd>Z</kbd> press will end the previous token)
 
-### Spacebar Start/Release
+### <kbd>Space</kbd>/<kbd>Z</kbd> press for start, release for end
 
-- Press **Spacebar** to mark start
-- Release **Spacebar** to mark end
+- Press <kbd>Space</kbd>/<kbd>Z</kbd> to mark start
+- Release <kbd>Space</kbd>/<kbd>Z</kbd> to mark end
 
 ## Usage
 
@@ -77,7 +77,48 @@ Punctuation "sticks" to adjacent words. Open punctuation like `(`, `{`, `[`, `�
 2. **Upload Files**: Add your audio file and transcript file
 3. **Start Alignment**: Begin the recording interface
 4. **Record Timing**: Use keyboard controls to mark token boundaries
-5. **Save**: Press **Ctrl+S** or click Save to export as `.gst`
+5. **Save**: Press <kbd>Ctrl</kbd>+<kbd>S</kbd> or click Save to export as `.gst`
+
+## Keyboard Controls
+
+### Recording Controls
+
+| Key                              | Action                                                           |
+| -------------------------------- | ---------------------------------------------------------------- |
+| <kbd>Space</kbd> or <kbd>Z</kbd> | Mark start time (release to mark end for “press/release” method) |
+| <kbd>Enter</kbd> or <kbd>C</kbd> | Mark end time (optional)                                         |
+| <kbd>A</kbd>                     | Previous token (clear current)                                   |
+| <kbd>D</kbd>                     | Next token (skip current)                                        |
+
+### Line Navigation
+
+| Key                  | Action                |
+| -------------------- | --------------------- |
+| <kbd>W</kbd>         | Previous line         |
+| <kbd>S</kbd>         | Next line             |
+| <kbd>Home</kbd>      | Jump to first line    |
+| <kbd>End</kbd>       | Jump to last line     |
+| <kbd>Page Up</kbd>   | Jump 5 lines backward |
+| <kbd>Page Down</kbd> | Jump 5 lines forward  |
+| Mouse Wheel          | Scroll through lines  |
+
+### Audio Playback
+
+| Key                 | Action             |
+| ------------------- | ------------------ |
+| <kbd>Numpad 0</kbd> | Play/pause audio   |
+| <kbd>↑</kbd>        | Speed up playback  |
+| <kbd>↓</kbd>        | Slow down playback |
+| <kbd>←</kbd>        | Seek backward      |
+| <kbd>→</kbd>        | Seek forward       |
+
+_Note: Audio playback speed and seek intervals can be configured in Settings._
+
+### File Operations
+
+| Key                          | Action                               |
+| ---------------------------- | ------------------------------------ |
+| <kbd>Ctrl</kbd>+<kbd>S</kbd> | Save aligned captions as `.gst` file |
 
 ## Escaping Special Characters
 

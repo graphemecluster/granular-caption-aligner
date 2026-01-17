@@ -12,3 +12,7 @@ body {
 #root {
 	@apply grid place-items-stretch overflow-auto;
 }
+
+kbd {
+	@apply inline-block px-2 py-1 text-sm font-semibold text-gray-800 bg-gray-100 border border-gray-300 rounded shadow-sm;
+}
