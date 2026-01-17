@@ -1,6 +1,6 @@
 import { useReducer } from "react";
 
-import type { GranularLine } from "../types";
+import type { GranularLine, GranularToken } from "../types";
 
 interface RecordingState {
 	lines: GranularLine[];
@@ -12,6 +12,8 @@ type RecordingAction =
 	| { type: "RESET"; initialLines: GranularLine[] }
 	| { type: "RECORD_START"; currentTime: number }
 	| { type: "RECORD_END"; currentTime: number }
+	| { type: "REVERT" }
+	| { type: "IGNORE" }
 	| { type: "NAVIGATE_TO_LINE"; lineIndex: number };
 
 function cloneLines(initialLines: GranularLine[]): GranularLine[] {
@@ -106,6 +108,38 @@ function recordingReducer(state: RecordingState, action: RecordingAction): Recor
 			}
 
 			return { lines: newLines, currentLineIndex: state.currentLineIndex, autoAdvanced: false };
+		}
+
+		case "REVERT": {
+			const newLines = cloneLines(state.lines);
+
+			const currentLine = newLines[state.currentLineIndex];
+			if (!currentLine.isSignificant) return state;
+
+			// Find the current and previous token. The first token without startTime is the current token
+			let previousToken: GranularToken | undefined;
+			let currentToken: GranularToken | undefined;
+			for (const token of currentLine.tokens) {
+				previousToken = currentToken;
+				currentToken = token;
+				if (token.isSignificant && token.startTime === undefined) {
+					// Clear startTime and endTime of the previous token (and the current token just in case)
+					token.endTime = undefined;
+					if (previousToken) {
+						previousToken.startTime = undefined;
+						previousToken.endTime = undefined;
+					}
+					break;
+				}
+			}
+
+			return { lines: newLines, currentLineIndex: state.currentLineIndex, autoAdvanced: false };
+		}
+
+		case "IGNORE": {
+			// Set startTime and endTime to null to mark as manually ignored
+			const newState = recordingReducer(state, { type: "RECORD_START", currentTime: null! });
+			return recordingReducer(newState, { type: "RECORD_END", currentTime: null! });
 		}
 
 		case "NAVIGATE_TO_LINE": {

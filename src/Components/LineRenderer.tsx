@@ -26,7 +26,8 @@ export default function LineRenderer({ line, pendingStartToken, pendingEndToken,
 					isPartiallyRecorded={token.startTime !== undefined}
 					isRecorded={token.startTime !== undefined && token.endTime !== undefined}
 					isPendingStart={token === pendingStartToken}
-					isPendingEnd={token === pendingEndToken} />
+					isPendingEnd={token === pendingEndToken}
+					isManuallyIgnored={token.startTime === null && token.endTime === null} />
 			))}
 		</div>
 	);

@@ -7,10 +7,13 @@ interface TokenRendererProps {
 	isRecorded: boolean;
 	isPendingStart: boolean;
 	isPendingEnd: boolean;
+	isManuallyIgnored: boolean;
 }
 
-export default function TokenRenderer({ text, isSignificant, isPartiallyRecorded, isRecorded, isPendingStart, isPendingEnd }: TokenRendererProps) {
+export default function TokenRenderer({ text, isSignificant, isPartiallyRecorded, isRecorded, isPendingStart, isPendingEnd, isManuallyIgnored }: TokenRendererProps) {
 	const className = ["transition-colors", "duration-150", "text-gray-300"];
+
+	// n.b. Don't change succeeding branches to `else if` - they are not mutually exclusive
 
 	if (isPendingEnd) className.push("bg-orange-800");
 
@@ -19,6 +22,8 @@ export default function TokenRenderer({ text, isSignificant, isPartiallyRecorded
 	if (isPartiallyRecorded) className.push("text-teal-500");
 
 	if (isRecorded) className.push("text-green-600");
+
+	if (isManuallyIgnored) className.push("text-red-600");
 
 	if (!isSignificant) className.push("text-gray-500");
 

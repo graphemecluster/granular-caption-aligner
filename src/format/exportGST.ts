@@ -1,10 +1,6 @@
-import type { GranularLine } from "../types";
+import { formatTime } from "../utils";
 
-function formatTime(seconds: number): string {
-	const mins = Math.floor(seconds / 60);
-	const secs = seconds % 60;
-	return `${String(mins).padStart(2, "0")}:${String(secs.toFixed(3)).padStart(6, "0")}`;
-}
+import type { GranularLine } from "../types";
 
 const specialCharsMapping: Record<string, string | undefined> = {
 	"\n": "n",
@@ -27,9 +23,12 @@ export default function exportGST(lines: GranularLine[]): string {
 			if (!token.isSignificant) {
 				lineTokens.push(escapeSpecialChars(token.text));
 			}
-			else if (token.startTime !== undefined || token.endTime !== undefined) {
-				const start = token.startTime === undefined ? "" : formatTime(token.startTime);
-				const end = token.endTime === undefined ? "" : formatTime(token.endTime);
+			else if (
+				token.startTime !== null && token.startTime !== undefined
+				|| token.endTime !== null && token.endTime !== undefined
+			) {
+				const start = token.startTime === null || token.startTime === undefined ? "" : formatTime(token.startTime);
+				const end = token.endTime === null || token.endTime === undefined ? "" : formatTime(token.endTime);
 				const text = escapeSpecialChars(token.text);
 				lineTokens.push(`{${start}|${end}|${text}}`);
 			}

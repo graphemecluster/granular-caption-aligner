@@ -2,7 +2,10 @@ import { useState } from "react";
 
 import { MarkGithubIcon } from "@primer/octicons-react";
 
-import type { AlignerConfig, PunctuationMode, RecordingMethod } from "../types";
+import AudioFileSelector from "./AudioFileSelector";
+import RecordingMethodSelector from "./RecordingMethodSelector";
+
+import type { AlignerConfig, PunctuationMode } from "../types";
 
 interface ConfigViewProps {
 	onStart: (config: AlignerConfig) => void;
@@ -123,53 +126,14 @@ export default function ConfigView({ onStart }: ConfigViewProps) {
 					</fieldset>
 
 					{/* Recording Method */}
-					<fieldset>
-						<legend className="block font-semibold text-gray-700 mb-2">
-							Recording Method
-						</legend>
-						<div className="space-y-2">
-							<label className="flex items-baseline">
-								<input
-									type="radio"
-									value="spacebarStartEnterEnd"
-									checked={config.recordingMethod === "spacebarStartEnterEnd"}
-									onChange={e => setConfig({ ...config, recordingMethod: e.target.value as RecordingMethod })}
-									className="mr-2" />
-								<span>Spacebar for start, Enter for end (optional)</span>
-							</label>
-							<label className="flex items-baseline">
-								<input
-									type="radio"
-									value="spacebarStartRelease"
-									checked={config.recordingMethod === "spacebarStartRelease"}
-									onChange={e => setConfig({ ...config, recordingMethod: e.target.value as RecordingMethod })}
-									className="mr-2" />
-								<span>Spacebar press for start, release for end</span>
-							</label>
-							<label className="flex items-baseline">
-								<input
-									type="radio"
-									value="midi"
-									checked={config.recordingMethod === "midi"}
-									onChange={e => setConfig({ ...config, recordingMethod: e.target.value as RecordingMethod })}
-									className="mr-2"
-									disabled />
-								<span className="text-gray-400">MIDI Keyboard (future)</span>
-							</label>
-						</div>
-					</fieldset>
+					<RecordingMethodSelector
+						recordingMethod={config.recordingMethod}
+						onRecordingMethodChange={method => setConfig({ ...config, recordingMethod: method })} />
 
 					{/* File Uploads */}
-					<fieldset>
-						<legend className="block font-semibold text-gray-700 mb-2">
-							Audio File
-						</legend>
-						<input
-							type="file"
-							accept="audio/*"
-							onChange={e => setConfig({ ...config, audioFile: e.target.files?.[0] || null })}
-							className="w-full border border-gray-300 rounded px-3 py-2" />
-					</fieldset>
+					<AudioFileSelector
+						audioFile={config.audioFile}
+						onAudioFileChange={file => setConfig({ ...config, audioFile: file })} />
 
 					<fieldset>
 						<legend className="block font-semibold text-gray-700 mb-2">

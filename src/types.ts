@@ -9,8 +9,8 @@ export interface SegmentationOptions {
 
 export interface GranularToken {
 	text: string;
-	startTime?: number; // in seconds
-	endTime?: number; // in seconds
+	startTime?: number | null; // in seconds, null if manually ignored
+	endTime?: number | null; // in seconds, null if manually ignored
 	isSignificant: boolean;
 }
 
@@ -24,4 +24,9 @@ export interface AlignerConfig {
 	recordingMethod: RecordingMethod;
 	audioFile: File | null;
 	lyricsFile: File | null;
+}
+
+export interface Settings {
+	speedChangeFactor: number; // Default: 4
+	seekSeconds: number; // Default: 5
 }
