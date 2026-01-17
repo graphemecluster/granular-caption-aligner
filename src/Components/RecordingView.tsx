@@ -141,6 +141,9 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 			// Don't handle keyboard events when dialog is open
 			if (isSettingsOpen || isHelpOpen) return;
 
+			// Don't perform any action if any modifier key is pressed
+			if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+
 			if ((e.code === "Space" || e.code === "KeyZ") && !e.repeat) {
 				e.preventDefault();
 				// Mark start time of the current token
@@ -240,6 +243,9 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 			// Don't handle keyboard events when dialog is open
 			if (isSettingsOpen || isHelpOpen) return;
 
+			// Don't perform any action if any modifier key is pressed
+			if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+
 			if ((e.code === "Space" || e.code === "KeyZ") && configOverrides.recordingMethod === "spacebarStartRelease") {
 				e.preventDefault();
 				recordEndTime();
@@ -270,7 +276,7 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 
 	useEffect(() => {
 		function handleSave(e: KeyboardEvent) {
-			if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+			if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && e.code === "KeyS") {
 				e.preventDefault();
 				handleSaveFile();
 			}
