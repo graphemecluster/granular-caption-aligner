@@ -6,10 +6,12 @@
 	"scripts": {
 		"start": "bun index.html",
 		"build": "bun ./build.ts",
-		"lint": "eslint src && tsc",
+		"format": "dprint check --list-different",
+		"format:fix": "dprint fmt",
+		"lint": "eslint src",
 		"lint:fix": "eslint src --fix",
-		"format": "dprint check",
-		"format:fix": "dprint fmt"
+		"typecheck": "tsc",
+		"test": "bun test"
 	},
 	"dependencies": {
 		"@primer/octicons-react": "^19.21.1",
