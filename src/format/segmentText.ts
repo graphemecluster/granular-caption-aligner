@@ -4,7 +4,7 @@ import parseText from "./parseText";
 
 import type { Break } from "linebreak";
 
-import type { GranularToken, SegmentationOptions } from "./types";
+import type { GranularToken, SegmentationOptions } from "../types";
 
 const wordSegmenter = new Intl.Segmenter("zxx", { granularity: "word" });
 

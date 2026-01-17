@@ -1,6 +1,6 @@
 import segmentText from "./segmentText";
 
-import type { GranularLine, SegmentationOptions } from "./types";
+import type { GranularLine, SegmentationOptions } from "../types";
 
 export default function parseGranularLyrics(input: string, options: SegmentationOptions): GranularLine[] {
 	return input.split(/\r\n|\r(?!\n)|\n/).map(rawLine => {

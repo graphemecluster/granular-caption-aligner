@@ -1,4 +1,4 @@
-import type { GranularLine } from "./types";
+import type { GranularLine } from "../types";
 
 function formatTime(seconds: number): string {
 	const mins = Math.floor(seconds / 60);

@@ -1,6 +1,6 @@
 import LineRenderer from "./LineRenderer";
 
-import type { GranularLine, GranularToken } from "./types";
+import type { GranularLine, GranularToken } from "../types";
 
 export function RecordingDisplay({
 	lines,

@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { MarkGithubIcon } from "@primer/octicons-react";
 
-import type { AlignerConfig, PunctuationMode, RecordingMethod } from "./types";
+import type { AlignerConfig, PunctuationMode, RecordingMethod } from "../types";
 
 interface ConfigViewProps {
 	onStart: (config: AlignerConfig) => void;

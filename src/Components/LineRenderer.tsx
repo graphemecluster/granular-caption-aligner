@@ -1,6 +1,6 @@
 import TokenRenderer from "./TokenRenderer";
 
-import type { GranularLine, GranularToken } from "./types";
+import type { GranularLine, GranularToken } from "../types";
 
 interface LineRendererProps {
 	line: GranularLine;

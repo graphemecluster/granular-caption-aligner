@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 
 import segmentText from "./segmentText";
 
-import type { SegmentationOptions } from "./types";
+import type { SegmentationOptions } from "../types";
 
 // Common option objects
 const NO_AUTO = { character: false, word: false, punctuation: "ignore" } as const;

@@ -1,10 +1,10 @@
 import { useState } from "react";
 
 import ConfigView from "./ConfigView";
-import parseGranularLyrics from "./parseGranularLyrics";
 import RecordingView from "./RecordingView";
+import parseGranularLyrics from "../format/parseGranularLyrics";
 
-import type { AlignerConfig, GranularLine } from "./types";
+import type { AlignerConfig, GranularLine } from "../types";
 
 export default function GranularCaptionAligner() {
 	const [started, setStarted] = useState(false);

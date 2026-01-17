@@ -2,11 +2,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { MarkGithubIcon } from "@primer/octicons-react";
 
-import exportGST from "./exportGST";
 import { RecordingDisplay } from "./RecordingDisplay";
-import useRecordingReducer from "./useRecordingReducer";
+import exportGST from "../format/exportGST";
+import useRecordingReducer from "../hooks/useRecordingReducer";
 
-import type { AlignerConfig, GranularLine } from "./types";
+import type { AlignerConfig, GranularLine } from "../types";
 
 function formatTime(seconds: number) {
 	const mins = Math.floor(seconds / 60);

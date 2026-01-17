@@ -1,6 +1,6 @@
 import { useReducer } from "react";
 
-import type { GranularLine } from "./types";
+import type { GranularLine } from "../types";
 
 interface RecordingState {
 	lines: GranularLine[];
