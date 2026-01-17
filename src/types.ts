@@ -19,10 +19,6 @@ export interface GranularLine {
 	isSignificant: boolean; // lines with any significant token
 }
 
-export interface ParsedLyrics {
-	lines: GranularLine[];
-}
-
 export interface AlignerConfig {
 	segmentation: SegmentationOptions;
 	recordingMethod: RecordingMethod;
