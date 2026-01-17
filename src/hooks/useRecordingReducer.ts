@@ -116,20 +116,55 @@ function recordingReducer(state: RecordingState, action: RecordingAction): Recor
 			const currentLine = newLines[state.currentLineIndex];
 			if (!currentLine.isSignificant) return state;
 
-			// Find the current and previous token. The first token without startTime is the current token
-			let previousToken: GranularToken | undefined;
-			let currentToken: GranularToken | undefined;
-			for (const token of currentLine.tokens) {
-				previousToken = currentToken;
-				currentToken = token;
-				if (token.isSignificant && token.startTime === undefined) {
-					// Clear startTime and endTime of the previous token (and the current token just in case)
-					token.endTime = undefined;
-					if (previousToken) {
-						previousToken.startTime = undefined;
-						previousToken.endTime = undefined;
+			// The whole line is empty / valid condition for re-recording: just navigate back to the previous line
+			const allEmptyInLine = currentLine.tokens
+				.filter(t => t.isSignificant)
+				.every(t => t.startTime === undefined);
+
+			const allRecordedInLine = currentLine.tokens
+				.filter(t => t.isSignificant)
+				.every(t => t.startTime !== undefined && t.endTime !== undefined);
+
+			if (allEmptyInLine || allRecordedInLine || state.autoAdvanced) {
+				for (let i = state.currentLineIndex - 1; i >= 0; i--) {
+					if (newLines[i].isSignificant) {
+						return { lines: newLines, currentLineIndex: i, autoAdvanced: false };
 					}
-					break;
+				}
+			}
+
+			// Check if current line has all significant tokens started
+			const allStartedInLine = currentLine.tokens
+				.filter(t => t.isSignificant)
+				.every(t => t.startTime !== undefined);
+
+			if (allStartedInLine) {
+				// Find token with startTime but without endTime in current line
+				for (const token of currentLine.tokens) {
+					if (token.isSignificant && token.startTime !== undefined && token.endTime === undefined) {
+						token.startTime = undefined;
+						break;
+					}
+				}
+			}
+			else {
+				// Find the current and previous token. The first token without startTime is the current token
+				let previousToken: GranularToken | undefined;
+				let currentToken: GranularToken | undefined;
+				for (const token of currentLine.tokens) {
+					if (token.isSignificant) {
+						previousToken = currentToken;
+						currentToken = token;
+						if (token.startTime === undefined) {
+							// Clear startTime and endTime of the previous token (and the current token just in case)
+							token.endTime = undefined;
+							if (previousToken) {
+								previousToken.startTime = undefined;
+								previousToken.endTime = undefined;
+							}
+							break;
+						}
+					}
 				}
 			}
 
