@@ -88,8 +88,12 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 		audio.playbackRate = audioControls.playbackRate;
 		audio.volume = audioControls.volume;
 
+		// Use requestAnimationFrame instead of "timeupdate" event for more frequent update
+		let animationFrame = requestAnimationFrame(updateTime);
+
 		function updateTime() {
 			setAudioState(prev => ({ ...prev, currentTime: audio!.currentTime }));
+			animationFrame = requestAnimationFrame(updateTime);
 		}
 		function updateDuration() {
 			setAudioState(prev => ({ ...prev, duration: audio!.duration }));
@@ -101,13 +105,12 @@ export default function RecordingView({ config, parsedLines, onBack }: Recording
 			setAudioState(prev => ({ ...prev, isPlaying: false }));
 		}
 
-		audio.addEventListener("timeupdate", updateTime);
 		audio.addEventListener("loadedmetadata", updateDuration);
 		audio.addEventListener("play", handlePlay);
 		audio.addEventListener("pause", handlePause);
 
 		return () => {
-			audio.removeEventListener("timeupdate", updateTime);
+			cancelAnimationFrame(animationFrame);
 			audio.removeEventListener("loadedmetadata", updateDuration);
 			audio.removeEventListener("play", handlePlay);
 			audio.removeEventListener("pause", handlePause);
